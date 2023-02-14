@@ -12,8 +12,9 @@ namespace TigerFrogGames
         
         [SerializeField] private InputActionAsset playerInput;
 
+        [SerializeField] private EventChannelBasic OnUnitNotSelected;
         
-        public InputAction _mouseLeftClick, _mouseRightClick;
+        private InputAction _mouseLeftClick, _mouseRightClick;
 
         #endregion
 
@@ -67,6 +68,11 @@ namespace TigerFrogGames
             if (Physics.Raycast(cam.ScreenPointToRay(mousePosition), out hit)) 
             {
                 hit.collider.GetComponent<IClickable>()?.OnClick();
+
+                if (!hit.transform.TryGetComponent(out Unit u))
+                {
+                    OnUnitNotSelected.RaiseEvent();
+                }
             }
             
         }
@@ -74,6 +80,12 @@ namespace TigerFrogGames
         private void MouseRightClickOnPerformed(InputAction.CallbackContext obj)
         {
             //print("Mouse has been right clicked");
+            RaycastHit hit; 
+            Vector3 mousePosition = Mouse.current.position.ReadValue();
+            if (Physics.Raycast(cam.ScreenPointToRay(mousePosition), out hit)) 
+            {
+                hit.collider.GetComponent<IClickable>()?.OnClick();
+            }
         }
         
         #endregion
