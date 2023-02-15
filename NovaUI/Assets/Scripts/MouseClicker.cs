@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Nova;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,6 +15,8 @@ namespace TigerFrogGames
         [SerializeField] private InputActionAsset playerInput;
 
         [SerializeField] private EventChannelBasic OnUnitNotSelected;
+
+        [SerializeField] private LayerMask uiMask;
         
         private InputAction _mouseLeftClick, _mouseRightClick;
 
@@ -69,6 +73,8 @@ namespace TigerFrogGames
             {
                 hit.collider.GetComponent<IClickable>()?.OnClick();
 
+                if(IsMouseOverUi()) return;
+                
                 if (!hit.transform.TryGetComponent(out Unit u))
                 {
                     OnUnitNotSelected.RaiseEvent();
@@ -88,6 +94,27 @@ namespace TigerFrogGames
             }
         }
         
+        public bool IsMouseOverUi()
+        {
+            // NameToLayer returns the index of the queried layer
+            int layerIndex = LayerMask.NameToLayer("UI");
+    
+            // GetMask returns the layer as a bitmask
+            int layerMask = LayerMask.GetMask("UI");        
+    
+            // Alternatively, you can convert layerIndex to a bitmask by bit-shifting.
+            // layerMaskFromIndex will equal layerMask
+            int layerMaskFromIndex = 1 << layerIndex;
+            
+            var ray = cam.ScreenPointToRay(Input.mousePosition);
+            var hits = new List<UIBlockHit>();
+            
+            Interaction.RaycastAll(ray, hits, Single.PositiveInfinity, layerMask);
+            
+            return hits.Count > 0;
+        }
+        
         #endregion
     }
+    
 }

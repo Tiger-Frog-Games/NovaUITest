@@ -10,6 +10,10 @@ public class Unit : MonoBehaviour, IClickable
     
     [field: SerializeField] public bool isAPlayer { private set; get; }
     [field: SerializeField] public String unitName { private set; get; }
+    [field: SerializeField] public String unitClass { private set; get; }
+    [field: SerializeField] public String unitCurrentHP { private set; get; }
+    [field: SerializeField] public float unitCurrentHPPercent { private set; get; }
+    
     [field: SerializeField] public List<WeaponData> unitWeapons { private set; get; }
 
     [SerializeField] private EventChannelUnit onClickedUnit;
